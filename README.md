@@ -1,13 +1,12 @@
-AI/ML Cybersecurity Lab 03 – User and Entity Behavior Analytics (UEBA)\
-\
-Introduction
-=======================================================================
+**AI/ML Cybersecurity Lab 03 – User and Entity Behavior Analytics (UEBA)**
+
+**Introduction**
 
 In this lab, I used Splunk Enterprise to investigate user login behavior and identify potentially suspicious activity using User and Entity Behavior Analytics (UEBA) concepts. Unlike traditional security monitoring that focuses on network traffic or malware, UEBA focuses on understanding how users normally behave and detecting deviations from their established behavioral patterns.
 
 The dataset contains user login activity, login times, geographic locations, device information, VPN usage, download activity, failed login attempts, and baseline behavioral information. By comparing current activity against a user's normal behavior, I can identify anomalies that may indicate account compromise, insider threats, unauthorized access, or other security incidents.
 
-## **Objectives**
+**Objectives**
 
 The objectives of this lab are to:
 
@@ -25,7 +24,7 @@ The objectives of this lab are to:
 
 - Identify high-risk users through behavioral analysis.
 
-## **AI/ML Concept**
+**AI/ML Concept**
 
 This lab introduces User and Entity Behavior Analytics (UEBA), one of the most common applications of artificial intelligence and machine learning in modern Security Operations Centers (SOCs).
 
@@ -43,17 +42,15 @@ The primary AI/ML concepts used in this lab include:
 
 Rather than relying solely on signatures or known attack indicators, UEBA systems learn what normal user behavior looks like and identify activities that significantly deviate from those patterns.
 
-## **Real-World Relevance**
+**Real-World Relevance**
 
 UEBA ( User and Entity Behavior Analytics) capabilities are widely used in enterprise security platforms to detect account compromise, insider threats, credential abuse, and suspicious user activity. Similar techniques are used by modern security products such as Splunk User Behavior Analytics, Microsoft Sentinel UEBA, and Exabeam.
 
 In this lab, I will use Splunk Enterprise to investigate user behavior and identify anomalous activities that would warrant further security investigation.
 
-## **Dataset**
+**Dataset**
 
-File:
-
-ueba_dataset.csv
+File name: ueba_dataset.csv
 
 Fields:
 
@@ -77,15 +74,15 @@ baseline_login_hour
 
 label
 
-\
-Uploading File & Verification\
-\
-\
-\
-\
+Please refer to images # 1 and 2
+
+**Uploading File & Verification**
+
+Please refer to images 3 and 4
+
 I uploaded the ueba_dataset.csv dataset into Splunk Enterprise and verified that **50 events** were successfully indexed. For demonstration purposes, I only included a screenshot of the **first 5 events** displayed in Splunk. The full dataset contains 50 events and will be used throughout this lab to investigate user behavior patterns, identify anomalies, and perform User and Entity Behavior Analytics (UEBA) investigations.
 
-**Which users logged in during unusual overnight hours?**
+. Which users logged in during unusual overnight hours?
 
 Using this query:\
 \
@@ -93,12 +90,9 @@ index=auth sourcetype=ueba\
 \| where login_hour \< 6\
 \| table user login_hour country new_device vpn failed_logins label
 
-\
-\
-\
-\
+Please refer to image 5
+
 I searched for login activity occurring during overnight hours between 1:00 AM and 5:00 AM. Organizations commonly monitor these hours because legitimate user activity is typically lower and attackers often operate during off-hours to avoid detection.
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 The users who logged in during unusual overnight hours were:
 
@@ -135,19 +129,17 @@ Instead it combines multiple behaviors:
 | Failed Logins | High                     |
 | Label         | Anomaly                  |
 
-**. Which users logged in from new countries?**
+. Which users logged in from new countries?
 
 Using this query:\
-\
-\
+
 index=auth sourcetype=ueba\
 \| where country != baseline_country\
 \| table user country baseline_country login_hour new_device vpn label
 
-\
-\
+Please refer to image # 6
+
 I compared the user's current login country against their baseline country to identify logins originating from unexpected geographic locations. UEBA systems commonly use this technique to detect account compromise, credential theft, and suspicious remote access activity.
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 The following users logged in from countries different from their normal baseline location:
 
@@ -161,11 +153,11 @@ All returned events were classified as: Anomaly
 
 I identified three users whose login locations deviated from their established baseline country. Additional suspicious indicators included:
 
-**.** Login activity during overnight hours.\
-**.** New devices being used.\
-**.** VPN disabled.\
-**.** Elevated failed login counts.\
-**.** Repeated logins from Russia, China, and Unknown locations.
+Login activity during overnight hours.\
+New devices being used.\
+VPN disabled.\
+Elevated failed login counts.\
+Repeated logins from Russia, China, and Unknown locations.
 
 The combination of geographic deviation and behavioral anomalies significantly increases the risk associated with these accounts.
 
@@ -195,10 +187,10 @@ as a behavioral deviation.
 
 However, the location change alone is not enough. The model increases risk because the same users also exhibit:
 
-. Unusual login hours\
-. New devices\
-. No VPN usage\
-. High failed login counts
+Unusual login hours\
+New devices\
+No VPN usage\
+High failed login counts
 
 This correlation of multiple behavioral anomalies is what makes UEBA effective.
 
@@ -209,9 +201,7 @@ Using this query:\
 index=auth sourcetype=ueba new_device="Yes"\
 \| table user country login_hour vpn failed_logins label
 
-\
-\
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Please refer to image # 7
 
 I searched for users who authenticated from a new device. New device usage is an important UEBA indicator because attackers frequently access compromised accounts from systems that have never been observed for that user before.\
 \
@@ -254,17 +244,14 @@ High Failed Logins
 
 This correlation of behaviors is what makes UEBA one of the most powerful AI/ML technologies used in modern SOC environments.
 
-**Which users deviated from their normal behavior?**
+. Which users deviated from their normal behavior?
 
 Using this query:\
 \
 index=auth sourcetype=ueba label=Anomaly\
 \| table user login_hour baseline_login_hour country baseline_country new_device vpn failed_logins
 
-
-\
-\
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Please refer to image # 8
 
 I reviewed all events classified as anomalies and compared current user behavior against established baselines. The investigation focused on login times, geographic locations, device usage, VPN activity, and failed login attempts to identify users whose behavior significantly deviated from normal patterns.
 
@@ -343,7 +330,7 @@ VPN Disabled\
 
 The more deviations observed, the higher the user's risk score becomes.
 
-. **Which users present the highest risk?**
+. Which users present the highest risk?
 
 Using the query:**\
 \**
@@ -351,10 +338,7 @@ index=auth sourcetype=ueba label=Anomaly\
 \| stats count by user\
 \| sort - count
 
-
-\
-\
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Please refer to image # 9
 
 I counted the number of anomaly events associated with each user and sorted the results in descending order. Users generating multiple anomaly events may represent a higher risk because suspicious behavior is recurring rather than isolated.
 
